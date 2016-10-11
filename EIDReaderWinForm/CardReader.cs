@@ -18,6 +18,7 @@ namespace EIDReaderWinForm
         private static string currentPhoto = "/currentphoto.jpg";
         private static string currentIdentity = "/currentidentity";
         public static EIDCard eidCard;
+        private ProcessIcon processIcon;
 
         public CardReader(string card)
         {

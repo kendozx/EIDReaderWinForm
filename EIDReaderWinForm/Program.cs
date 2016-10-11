@@ -16,7 +16,12 @@ namespace EIDReaderWinForm
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            using (ProcessIcon pi = new ProcessIcon())
+            {
+                pi.Display();
+                //CardReader cardReader = new CardReader(pi);
+                Application.Run();
+            }
         }
     }
 }
