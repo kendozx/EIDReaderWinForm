@@ -70,5 +70,17 @@ namespace EIDReaderWinForm.Properties {
                 this["OdataUri"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Card {
+            get {
+                return ((string)(this["Card"]));
+            }
+            set {
+                this["Card"] = value;
+            }
+        }
     }
 }

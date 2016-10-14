@@ -5,10 +5,12 @@
 // Assembly location: C:\EIDReaderForSAP\EIDReaderForSAP.exe
 
 using EIDNative;
+using MaterialSkin.Controls;
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Windows.Forms;
 
 namespace EIDReaderWinForm
 {
@@ -18,11 +20,14 @@ namespace EIDReaderWinForm
         private static string currentPhoto = "/currentphoto.jpg";
         private static string currentIdentity = "/currentidentity";
         public static EIDCard eidCard;
-        private ProcessIcon processIcon;
+        private static ProcessIcon processIcon;
 
-        public CardReader(string card)
+        public CardReader(ProcessIcon pi, string card)
         {
             eidCard = null;
+            if (pi == null)
+                return;
+            processIcon = pi;
             if (CardReader.eidCard == null)
             {
                 CardReader.InitReader();
@@ -33,15 +38,22 @@ namespace EIDReaderWinForm
             if (storedCard.Length > 0 && array != null)
             {
                 int index = Array.FindIndex<string>(array, (Predicate<string>)(reader => reader.Equals(storedCard)));
+                index = index < 0 ? 0 : index;
                 CardReader.eidCard.SelectReader(index);
+                Properties.Settings.Default.Card = array[index].ToString();
+                Properties.Settings.Default.Save();
             }
             else
+            {
                 CardReader.eidCard.SelectReader(0);
+                Properties.Settings.Default.Card = array[0].ToString();
+                Properties.Settings.Default.Save();
+            }
 
             //CardReader.eidCard.ReadId();
             //CardReader.eidCard.ReadSisId();
             //CardReader.eidCard.ReadPicture();
-            CardReader.ReadCardData();
+            //CardReader.ReadCardData();
         }
 
         public static void InitReader()
@@ -130,11 +142,12 @@ namespace EIDReaderWinForm
 
         private static void deleteData()
         {
-            if (File.Exists(CardReader.exportDir + CardReader.currentIdentity))
-                File.Delete(CardReader.exportDir + CardReader.currentIdentity);
-            if (!File.Exists(CardReader.exportDir + CardReader.currentPhoto))
-                return;
-            File.Delete(CardReader.exportDir + CardReader.currentPhoto);
+            //  if (File.Exists(CardReader.exportDir + CardReader.currentIdentity))
+            //      File.Delete(CardReader.exportDir + CardReader.currentIdentity);
+            //  if (!File.Exists(CardReader.exportDir + CardReader.currentPhoto))
+            //      return;
+            //  File.Delete(CardReader.exportDir + CardReader.currentPhoto);
+            CardReader.eidCard.Clear();
         }
 
         private static void eidCard_CardActivated(object sender, EventArgs e)
@@ -144,13 +157,19 @@ namespace EIDReaderWinForm
         private static void eidCard_CardInserted(object sender, EventArgs e)
         {
             //new ProcessIcon().getNotifyIcon().Icon = Resources.beid;
+            System.Threading.Thread.Sleep(500);
             CardReader.ReadCardData();
+            MainStatic.form2.Visible = true;
+            MainStatic.form2.readCardData();
+            MainStatic.form2.BringToFront();
         }
 
         private static void eidCard_CardRemoved(object sender, EventArgs e)
         {
             //new ProcessIcon().getNotifyIcon().Icon = Resources.beid_grey;
             CardReader.deleteData();
+            MainStatic.form2.Visible = false;
+            MainStatic.form2.clearValue();
         }
 
         private static void eidCard_CardWaiting(object sender, EventArgs e)

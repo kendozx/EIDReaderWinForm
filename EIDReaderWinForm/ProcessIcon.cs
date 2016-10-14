@@ -10,45 +10,48 @@ using System.Windows.Forms;
 
 namespace EIDReaderWinForm
 {
-  internal class ProcessIcon : IDisposable
-  {
-    private static NotifyIcon ni;
-
-    public ProcessIcon()
+    internal class ProcessIcon : IDisposable
     {
-      if (ProcessIcon.ni != null)
-        return;
-      ProcessIcon.ni = new NotifyIcon();
-      Application.ApplicationExit += new EventHandler(this.OnApplicationExit);
-    }
+        private static NotifyIcon ni;
+        public Form01_Query form1;
+        public Form02_Insert form2;
+        public Option form_option;
 
-    public NotifyIcon getNotifyIcon()
-    {
-      return ProcessIcon.ni;
-    }
+        public ProcessIcon()
+        {
+            if (ProcessIcon.ni != null)
+                return;
+            ProcessIcon.ni = new NotifyIcon();
+            Application.ApplicationExit += new EventHandler(this.OnApplicationExit);
+        }
 
-    public void Display()
-    {
-      ProcessIcon.ni.MouseClick += new MouseEventHandler(this.ni_MouseClick);
-      ProcessIcon.ni.Icon = Properties.Resources.iconE2;
-      ProcessIcon.ni.Text = "e-ID Reader to SuccessFactors";
-      ProcessIcon.ni.Visible = true;
-      ProcessIcon.ni.ContextMenuStrip = new ContextMenus().Create();
-    }
+        public NotifyIcon getNotifyIcon()
+        {
+            return ProcessIcon.ni;
+        }
 
-    public void Dispose()
-    {
-      ProcessIcon.ni.Dispose();
-    }
+        public void Display()
+        {
+            ProcessIcon.ni.MouseClick += new MouseEventHandler(this.ni_MouseClick);
+            ProcessIcon.ni.Icon = Properties.Resources.iconE2;
+            ProcessIcon.ni.Text = "e-ID Reader to SuccessFactors";
+            ProcessIcon.ni.Visible = true;
+            ProcessIcon.ni.ContextMenuStrip = new ContextMenus().Create(this);
+        }
 
-    private void ni_MouseClick(object sender, MouseEventArgs e)
-    {
-      int num = (int) e.Button;
-    }
+        public void Dispose()
+        {
+            ProcessIcon.ni.Dispose();
+        }
 
-    private void OnApplicationExit(object sender, EventArgs e)
-    {
-      ProcessIcon.ni.Dispose();
+        private void ni_MouseClick(object sender, MouseEventArgs e)
+        {
+            int num = (int)e.Button;
+        }
+
+        private void OnApplicationExit(object sender, EventArgs e)
+        {
+            ProcessIcon.ni.Dispose();
+        }
     }
-  }
 }

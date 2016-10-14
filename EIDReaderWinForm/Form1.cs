@@ -234,7 +234,6 @@ namespace EIDReaderWinForm
                 return;
             }
 
-            CardReader cardReader = new CardReader(cbCardReader.SelectedValue.ToString());
             if (String.IsNullOrEmpty(CardReader.eidCard.Identity.CardNumber))
             {
                 MessageBox.Show(Resources.MessageText.MsgInvalidCard, "Message", MessageBoxButtons.OK, MessageBoxIcon.Warning);

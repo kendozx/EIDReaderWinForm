@@ -15,9 +15,11 @@ namespace EIDReaderWinForm
         private bool isAboutLoaded;
         private bool isSettingsLoaded;
         private ContextMenuStrip menu;
+        private ProcessIcon processIcon;
 
-        public ContextMenuStrip Create()
+        public ContextMenuStrip Create(ProcessIcon pi)
         {
+            this.processIcon = pi;
             this.menu = new MaterialSkin.Controls.MaterialContextMenuStrip();
             ToolStripMenuItem toolStripMenuItem1 = new ToolStripMenuItem();
             toolStripMenuItem1.Text = "QUERY Employees";
@@ -42,6 +44,15 @@ namespace EIDReaderWinForm
             toolStripMenuItem3.Click += new EventHandler(this.Exit_Click);
             toolStripMenuItem3.Image = (Image)Properties.Resources.export_24;
             this.menu.Items.Add((ToolStripItem)toolStripMenuItem3);
+
+            if (!this.isAboutLoaded)
+            {
+                this.isAboutLoaded = true;
+                //int num = (int)new Form02_Insert().ShowDialog();
+                MainStatic.form2.ShowDialog();
+                this.isAboutLoaded = false;
+            }
+
             return this.menu;
         }
 
@@ -51,7 +62,8 @@ namespace EIDReaderWinForm
                 return;
             this.isSettingsLoaded = true;
             //int num = (int) new SettingsBox().ShowDialog();
-            int num = (int)new Option().ShowDialog();
+            MainStatic.form_option = new Option();
+            int num = (int)MainStatic.form_option.ShowDialog();
             this.isSettingsLoaded = false;
         }
 
@@ -60,7 +72,8 @@ namespace EIDReaderWinForm
             if (this.isAboutLoaded)
                 return;
             this.isAboutLoaded = true;
-            int num = (int)new Form01_Query().ShowDialog();
+            MainStatic.form1 = new Form01_Query();
+            int num = (int)MainStatic.form1.ShowDialog();
             this.isAboutLoaded = false;
         }
 
@@ -69,12 +82,21 @@ namespace EIDReaderWinForm
             if (this.isAboutLoaded)
                 return;
             this.isAboutLoaded = true;
-            int num = (int)new Form02_Insert().ShowDialog();
+            //int num = (int)new Form02_Insert().ShowDialog();
+            //MainStatic.form2 = new Form02_Insert();
+            //int num = (int)MainStatic.form2.ShowDialog();
+            MainStatic.form2.Visible = true;
             this.isAboutLoaded = false;
         }
 
         private void Exit_Click(object sender, EventArgs e)
         {
+            if(MainStatic.form1 != null)
+                MainStatic.form1.Close();
+            if (MainStatic.form2 != null)
+                MainStatic.form2.Close();
+            if (MainStatic.form_option != null)
+                MainStatic.form_option.Close();
             Application.Exit();
         }
     }

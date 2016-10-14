@@ -16,6 +16,8 @@ namespace EIDReaderWinForm
 {
     public partial class Form02_Insert : MaterialForm
     {
+        private string[] readers;
+
         public Form02_Insert()
         {
             InitializeComponent();
@@ -24,6 +26,7 @@ namespace EIDReaderWinForm
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
             initComponent();
             clearValue();
+            this.Visible = false;
         }
 
         private void initComponent()
@@ -42,21 +45,51 @@ namespace EIDReaderWinForm
 
         private void reloadCardList()
         {
+            this.readers = EIDNative.EIDCard.ListReaders();
             var dict = new Dictionary<string, string>();
+            int index;
 
-            string[] array = EIDNative.EIDCard.ListReaders();
-            dict.Add("", "Select Card Reader");
-            foreach (string str in array)
+            if (this.readers != null)
             {
-                dict.Add(str, str);
+                foreach (string str in this.readers)
+                {
+                    dict.Add(str, str);
+                }
+                cbCardReader.Enabled = true;
+                materialRaisedButton1.Enabled = true;
+                string storedCard = Properties.Settings.Default.Card;
+                cbCardReader.DataSource = new BindingSource(dict, null);
+                cbCardReader.DisplayMember = "Value";
+                cbCardReader.ValueMember = "Key";
+                //cbCardReader.SelectedIndex = cbCardReader.Items.Count - 1;
+                //cbCardReader.SelectedValue = Properties.Settings.Default.Card;              
+                if (storedCard.Length > 0 && this.readers != null)
+                {
+                    index = Array.FindIndex<string>(this.readers, (Predicate<string>)(reader => reader.Equals(storedCard)));
+                    index = index < 0 ? 0 : index;
+                    cbCardReader.SelectedIndex = index;
+                } else
+                {
+                    cbCardReader.SelectedIndex = 0;
+                }
+                this.changeCard(cbCardReader.SelectedIndex);
             }
-
-            cbCardReader.DataSource = new BindingSource(dict, null);
-            cbCardReader.DisplayMember = "Value";
-            cbCardReader.ValueMember = "Key";
-            cbCardReader.SelectedIndex = cbCardReader.Items.Count - 1;
+            else
+            {
+                materialRaisedButton1.Enabled = false;
+                cbCardReader.Enabled = false;
+                cbCardReader.Items.Add((object)"No card reader found, plugin and reload");
+                cbCardReader.SelectedIndex = 0;
+            }
         }
 
+        private void changeCard(int index)
+        {
+            CardReader.InitReader();
+            CardReader.eidCard.SelectReader(index);
+            Properties.Settings.Default.Card = this.readers[index];
+            Properties.Settings.Default.Save();
+        }
 
         private void tabPage3_Click(object sender, EventArgs e)
         {
@@ -158,13 +191,14 @@ namespace EIDReaderWinForm
             clearValue();
         }
 
-        private void clearValue()
+        public void clearValue()
         {
             txtFirstName.Text = String.Empty;
             txtLastName.Text = String.Empty;
             txtPassword.Text = String.Empty;
             txtUserID.Text = String.Empty;
             txtUsername.Text = String.Empty;
+            txtNatId.Text = String.Empty;
             cbGender.SelectedIndex = 0;
             dateDOB.Value = DateTime.Today;
             pictureBox1.ImageLocation = String.Empty;
@@ -173,12 +207,17 @@ namespace EIDReaderWinForm
 
         private void materialRaisedButton6_Click(object sender, EventArgs e)
         {
+            readCardData();
+        }
+
+        public void readCardData()
+        {
+            //reloadCardList();
             if (cbCardReader.SelectedValue.ToString() == String.Empty)
             {
                 return;
             }
 
-            CardReader cardReader = new CardReader(cbCardReader.SelectedValue.ToString());
             if (String.IsNullOrEmpty(CardReader.eidCard.Identity.CardNumber))
             {
                 MessageBox.Show(Resources.MessageText.MsgInvalidCard, "Message", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -190,6 +229,7 @@ namespace EIDReaderWinForm
                     txtFirstName.Text = card.Identity.FirstName1;
                     txtLastName.Text = card.Identity.Surname;
                     cbGender.SelectedValue = card.Identity.Sex;
+                    txtNatId.Text = card.Identity.CardNumber;
                     pictureBox1.Image = card.Picture;
                     dateDOB.Value = EIDNative.CardDate.ToDate(card.Identity.BirthDate);
                     txtUserID.Text = txtUsername.Text = (card.Identity.FirstName1[0] + card.Identity.Surname).ToLower();
@@ -354,6 +394,24 @@ namespace EIDReaderWinForm
                     }
                 }
             }
+        }
+
+        private void materialRaisedButton4_Click(object sender, EventArgs e)
+        {
+            initComponent();
+        }
+
+        private void cbCardReader_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!cbCardReader.Enabled)
+                return;
+            this.changeCard(cbCardReader.SelectedIndex);
+        }
+
+        private void Form02_Insert_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            this.Visible = false;
         }
     }
 }

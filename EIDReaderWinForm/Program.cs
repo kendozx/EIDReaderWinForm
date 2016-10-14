@@ -18,8 +18,8 @@ namespace EIDReaderWinForm
             Application.SetCompatibleTextRenderingDefault(false);
             using (ProcessIcon pi = new ProcessIcon())
             {
+                CardReader cardReader = new CardReader(pi, Properties.Settings.Default.Card);
                 pi.Display();
-                //CardReader cardReader = new CardReader(pi);
                 Application.Run();
             }
         }

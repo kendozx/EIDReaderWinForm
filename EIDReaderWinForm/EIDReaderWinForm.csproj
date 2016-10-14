@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardReader.cs" />
+    <Compile Include="MainStatic.cs" />
     <Compile Include="ContextMenus.cs" />
     <Compile Include="Form01_Query.cs">
       <SubType>Form</SubType>

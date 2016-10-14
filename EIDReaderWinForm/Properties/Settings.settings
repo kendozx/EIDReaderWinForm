@@ -14,5 +14,8 @@
     <Setting Name="OdataUri" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://apisalesdemo8.successfactors.com</Value>
     </Setting>
+    <Setting Name="Card" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

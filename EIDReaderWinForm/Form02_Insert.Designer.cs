@@ -397,7 +397,6 @@
             // 
             this.txtUsername.AccessibleDescription = "";
             this.txtUsername.AccessibleName = "";
-            this.txtUsername.Enabled = false;
             this.txtUsername.Location = new System.Drawing.Point(122, 43);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(141, 20);
@@ -407,7 +406,6 @@
             // 
             this.txtUserID.AccessibleDescription = "";
             this.txtUserID.AccessibleName = "";
-            this.txtUserID.Enabled = false;
             this.txtUserID.Location = new System.Drawing.Point(122, 15);
             this.txtUserID.Name = "txtUserID";
             this.txtUserID.Size = new System.Drawing.Size(141, 20);
@@ -456,7 +454,6 @@
             // 
             this.txtPassword.AccessibleDescription = "";
             this.txtPassword.AccessibleName = "";
-            this.txtPassword.Enabled = false;
             this.txtPassword.Location = new System.Drawing.Point(122, 71);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(141, 20);
@@ -492,6 +489,7 @@
             this.cbCardReader.Name = "cbCardReader";
             this.cbCardReader.Size = new System.Drawing.Size(239, 21);
             this.cbCardReader.TabIndex = 11;
+            this.cbCardReader.SelectedIndexChanged += new System.EventHandler(this.cbCardReader_SelectedIndexChanged);
             // 
             // materialRaisedButton1
             // 
@@ -521,6 +519,7 @@
             this.materialRaisedButton4.TabIndex = 22;
             this.materialRaisedButton4.Text = "Reload";
             this.materialRaisedButton4.UseVisualStyleBackColor = true;
+            this.materialRaisedButton4.Click += new System.EventHandler(this.materialRaisedButton4_Click);
             // 
             // materialRaisedButton5
             // 
@@ -571,6 +570,7 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "e-ID Reader to SuccessFactors / ADD New Employee";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form02_Insert_FormClosing);
             this.tabControl2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
